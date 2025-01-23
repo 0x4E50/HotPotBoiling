@@ -30,30 +30,41 @@ document.addEventListener('DOMContentLoaded', function () {
         startCountdown(timerId, time, name);
     }
 
-    // 开始倒计时
-    function startCountdown(timerId, time, name) {
-        const timerElement = document.getElementById(timerId);
-        let remainingTime = time;
+	// 开始倒计时（修改后的逻辑）
+	function startCountdown(timerId, time, name) {
+		const timerElement = document.getElementById(timerId);
+		let remainingTime = time;
 
-        const interval = setInterval(() => {
-            remainingTime--;
-            timerElement.querySelector('span').textContent = `${name} - ${remainingTime}秒`;
+		const interval = setInterval(() => {
+			remainingTime--;
+			timerElement.querySelector('span').textContent = `${name} - ${remainingTime}秒`;
 
-            // 倒计时结束
-            if (remainingTime <= 0) {
-                clearInterval(interval);
-                timerElement.style.backgroundColor = '#e74c3c'; // 背景变红
-                timerElement.querySelector('button').textContent = '煮好'; // 按钮文字改为“煮好”
-                timerElement.querySelector('button').onclick = () => finishCooking(timerId, name); // 点击“煮好”后完成烹饪
-            }
-        }, 1000);
-    }
+			// 倒计时结束
+			if (remainingTime <= 0) {
+				clearInterval(interval);
+				timerElement.style.backgroundColor = '#e74c3c';
+				timerElement.classList.add('finished'); // 添加可点击样式
+				const button = timerElement.querySelector('button');
+				button.textContent = '煮好';
 
-    // 完成烹饪
-    function finishCooking(timerId, name) {
-        removeTimer(timerId);
-        updateHistory(name, 'cooked');
-    }
+				// 点击按钮完成烹饪（保留原有功能）
+				button.onclick = () => finishCooking(timerId, name);
+
+				// 点击整个计时器区域完成烹饪（新增功能）
+				timerElement.addEventListener('click', function handleTimerClick() {
+					finishCooking(timerId, name);
+					// 移除事件监听，避免重复触发
+					timerElement.removeEventListener('click', handleTimerClick);
+				});
+			}
+		}, 1000);
+	}
+
+	// 完成烹饪（共用逻辑）
+	function finishCooking(timerId, name) {
+		removeTimer(timerId);
+		updateHistory(name, 'cooked');
+	}
 
     // 移除计时器
     window.removeTimer = function (timerId, name) {
