@@ -115,3 +115,42 @@ h1 {
 #history-list li button:hover {
     background-color: #2980b9;
 }
+.highlight-box {
+    border: 3px solid #ff6f61; /* 醒目的边框颜色 */
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #fff3f2; /* 浅色背景 */
+    position: relative;
+    animation: pulse 2s infinite; /* 添加脉冲动画 */
+}
+
+.highlight-box p {
+    font-size: 16px;
+    font-weight: bold;
+    color: #ff6f61; /* 文字颜色与边框一致 */
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 111, 97, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(255, 111, 97, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 111, 97, 0);
+    }
+}
+
+/* 倒计时结束后，计时器变为可点击状态 */
+.timer.finished {
+    cursor: pointer; /* 鼠标变为手型 */
+    transition: transform 0.2s;
+}
+
+.timer.finished:hover {
+    transform: scale(1.02); /* 悬停时轻微放大 */
+}
