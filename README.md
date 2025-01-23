@@ -1,6 +1,6 @@
 # 火锅沸腾
 
-![火锅沸腾](https://chat.deepseek.com/a/chat/s/assets/icons/logo.png) <!-- 如果有 logo 可以放在这里 -->
+![火锅沸腾](https://raw.githubusercontent.com/0x4E50/HotPotBoiling/refs/heads/main/HotPotBoiling.jpg) <!-- 如果有 logo 可以放在这里 -->
 
 **火锅沸腾** 是一个专为火锅爱好者设计的在线工具，帮助用户根据食材的不同烹饪时间设置计时器，并在食材煮熟时提醒用户。无论是牛肉片、金针菇还是豆腐，都能轻松掌握最佳食用时间！
 
