@@ -154,3 +154,20 @@ h1 {
 .timer.finished:hover {
     transform: scale(1.02); /* 悬停时轻微放大 */
 }
+
+/* 增加重新开始功能 */
+.reset-button {
+    display: block;
+    margin: 10px auto;
+    padding: 10px 20px;
+    background-color: #e74c3c;
+    border: none;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.reset-button:hover {
+    background-color: #c0392b;
+}
