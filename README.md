@@ -48,7 +48,7 @@
 ## 项目结构
 
 ```
-/huoguo-feiteng
+/HotPotBoiling
 │
 ├── index.html          # 主页面
 ├── styles.css          # 样式文件
