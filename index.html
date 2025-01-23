@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>火锅沸腾</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>火锅沸腾</h1>
+        <div class="guide-box">
+            <p>点击下方食材开始计时，倒计时结束后点击“煮好”完成烹饪！</p>
+        </div>
+        <div id="timer-area" class="timer-area">
+            <!-- 动态添加的计时器会显示在这里 -->
+        </div>
+        <div class="ingredients">
+            <h2>常用食材</h2>
+            <ul id="ingredient-list">
+                <li data-time="30">牛肉片</li>
+                <li data-time="10">金针菇</li>
+                <li data-time="5">豆腐</li>
+                <li data-time="15">虾滑</li>
+                <li data-time="20">土豆片</li>
+                <li data-time="8">青菜</li>
+                <!-- 更多食材可以继续添加 -->
+            </ul>
+        </div>
+        <div class="history">
+            <h2>历史记录</h2>
+            <ul id="history-list">
+                <!-- 历史记录会动态添加到这里 -->
+            </ul>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
