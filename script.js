@@ -2,9 +2,25 @@ document.addEventListener('DOMContentLoaded', function () {
     const timerArea = document.getElementById('timer-area');
     const ingredientList = document.getElementById('ingredient-list');
     const historyList = document.getElementById('history-list');
+    const resetButton = document.getElementById('reset-button');
 
-    // 历史记录数据
-    let history = [];
+    // 从 localStorage 加载数据
+    let timers = JSON.parse(localStorage.getItem('timers')) || [];
+    let history = JSON.parse(localStorage.getItem('history')) || [];
+
+    // 初始化页面
+    renderHistory();
+    timers.forEach(timer => {
+        // 检查是否已经存在相同的计时器
+        if (!document.getElementById(timer.id)) {
+            const remainingTime = calculateRemainingTime(timer.startTime, timer.duration);
+            if (remainingTime > 0) {
+                addTimer(timer.name, remainingTime, timer.startTime, timer.id);
+            } else {
+                updateHistory(timer.name, 'cooked');
+            }
+        }
+    });
 
     // 食材点击事件
     ingredientList.addEventListener('click', function (event) {
@@ -16,8 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // 添加计时器
-    function addTimer(name, time) {
-        const timerId = `timer-${Date.now()}`;
+    function addTimer(name, time, startTime = Date.now(), timerId = `timer-${Date.now()}`) {
         const timerElement = document.createElement('div');
         timerElement.id = timerId;
         timerElement.className = 'timer';
@@ -27,50 +42,55 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
         timerArea.appendChild(timerElement);
 
-        startCountdown(timerId, time, name);
+        // 保存计时器数据
+        timers.push({ id: timerId, name, duration: time, startTime });
+        saveTimers();
+
+        startCountdown(timerId, time, name, startTime);
     }
 
-	// 开始倒计时（修改后的逻辑）
-	function startCountdown(timerId, time, name) {
-		const timerElement = document.getElementById(timerId);
-		let remainingTime = time;
+    // 开始倒计时
+    function startCountdown(timerId, time, name, startTime) {
+        const timerElement = document.getElementById(timerId);
+        let remainingTime = time;
 
-		const interval = setInterval(() => {
-			remainingTime--;
-			timerElement.querySelector('span').textContent = `${name} - ${remainingTime}秒`;
+        const interval = setInterval(() => {
+            remainingTime--;
+            timerElement.querySelector('span').textContent = `${name} - ${remainingTime}秒`;
 
-			// 倒计时结束
-			if (remainingTime <= 0) {
-				clearInterval(interval);
-				timerElement.style.backgroundColor = '#e74c3c';
-				timerElement.classList.add('finished'); // 添加可点击样式
-				const button = timerElement.querySelector('button');
-				button.textContent = '煮好';
+            // 倒计时结束
+            if (remainingTime <= 0) {
+                clearInterval(interval);
+                timerElement.style.backgroundColor = '#e74c3c';
+                timerElement.classList.add('finished');
+                const button = timerElement.querySelector('button');
+                button.textContent = '煮好';
 
-				// 点击按钮完成烹饪（保留原有功能）
-				button.onclick = () => finishCooking(timerId, name);
+                // 点击按钮完成烹饪
+                button.onclick = () => finishCooking(timerId, name);
 
-				// 点击整个计时器区域完成烹饪（新增功能）
-				timerElement.addEventListener('click', function handleTimerClick() {
-					finishCooking(timerId, name);
-					// 移除事件监听，避免重复触发
-					timerElement.removeEventListener('click', handleTimerClick);
-				});
-			}
-		}, 1000);
-	}
+                // 点击整个计时器区域完成烹饪
+                timerElement.addEventListener('click', function handleTimerClick() {
+                    finishCooking(timerId, name);
+                    timerElement.removeEventListener('click', handleTimerClick);
+                });
+            }
+        }, 1000);
+    }
 
-	// 完成烹饪（共用逻辑）
-	function finishCooking(timerId, name) {
-		removeTimer(timerId);
-		updateHistory(name, 'cooked');
-	}
+    // 完成烹饪
+    function finishCooking(timerId, name) {
+        removeTimer(timerId);
+        updateHistory(name, 'cooked');
+    }
 
     // 移除计时器
     window.removeTimer = function (timerId, name) {
         const timerElement = document.getElementById(timerId);
         if (timerElement) {
             timerElement.remove();
+            timers = timers.filter(timer => timer.id !== timerId);
+            saveTimers();
             if (name) {
                 updateHistory(name, 'removed');
             }
@@ -87,6 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
             history.push({ name, type, count: 1 });
         }
 
+        saveHistory();
         renderHistory();
     }
 
@@ -101,6 +122,31 @@ document.addEventListener('DOMContentLoaded', function () {
             `)
             .join('');
     }
+
+    // 保存计时器数据
+    function saveTimers() {
+        localStorage.setItem('timers', JSON.stringify(timers));
+    }
+
+    // 保存历史记录数据
+    function saveHistory() {
+        localStorage.setItem('history', JSON.stringify(history));
+    }
+
+    // 计算剩余时间
+    function calculateRemainingTime(startTime, duration) {
+        const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+        return Math.max(duration - elapsedTime, 0);
+    }
+
+    // 重新开始
+    resetButton.addEventListener('click', function () {
+        timers = [];
+        history = [];
+        localStorage.clear();
+        timerArea.innerHTML = '';
+        historyList.innerHTML = '';
+    });
 
     // 再来一份
     window.reCook = function (name) {
